@@ -1,18 +1,17 @@
 /*
- * Copyright 2021 TiKV Project Authors.
+ * Copyright 2023 Ververica Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package org.tikv.common.codec;
@@ -20,6 +19,7 @@ package org.tikv.common.codec;
 import java.util.Arrays;
 import org.tikv.common.exception.InvalidCodecFormatException;
 
+/** Copied from https://github.com/tikv/client-java project to fix */
 public class RowV2 {
   // CodecVer is the constant number that represent the new row format.
   public static int CODEC_VER = 0x80;
@@ -29,6 +29,8 @@ public class RowV2 {
   int numNotNullCols;
   int numNullCols;
   byte[] colIDs;
+  // The byte array will overflow, so change it to an int array
+  int[] colIdsInt;
   int[] offsets;
   byte[] data;
   // for large row
@@ -97,6 +99,8 @@ public class RowV2 {
       int numCols = this.numNotNullCols + this.numNullCols;
       int colIDsLen = numCols;
       this.colIDs = new byte[numCols];
+      this.colIdsInt = new int[numCols];
+      readFullyForInt(this.colIdsInt, 0, numCols);
       cdi.readFully(this.colIDs, 0, numCols);
       cursor += colIDsLen;
       numCols = this.numNotNullCols;
@@ -108,6 +112,18 @@ public class RowV2 {
       cursor += offsetsLen;
     }
     this.data = Arrays.copyOfRange(rowData, cursor, rowData.length);
+  }
+
+  /**
+   * Fill int array starting from 2. Why start with 2 ? Because the binarySearch method only looks
+   * for non-primary key fields, and ID values for non-primary key fields start at 2. Primary key
+   * fields are handled separately, the ID value of the primary key field is 1.
+   */
+  private void readFullyForInt(int[] colIdsInt, int i, int numCols) {
+    int val = 2;
+    while (i < numCols) {
+      colIdsInt[i++] = val++;
+    }
   }
 
   private void writeShortArray(CodecDataOutput cdo, int[] arr) {
@@ -147,7 +163,7 @@ public class RowV2 {
       if (this.large) {
         v = this.colIDs32[h];
       } else {
-        v = this.colIDs[h];
+        v = this.colIdsInt[h];
       }
       if (v < colID) {
         i = h + 1;

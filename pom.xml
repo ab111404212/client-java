@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.tikv</groupId>
     <artifactId>tikv-client-java</artifactId>
-    <version>3.2.1-SNAPSHOT</version>
+    <version>3.2.4</version>
     <packaging>jar</packaging>
     <name>TiKV Java Client</name>
     <description>A Java Client for TiKV</description>
-    <url>http://github.com/tikv/client-java</url>
+    <url>http://github.com/ab111404212/client-java</url>
     <licenses>
         <license>
             <name>Apache 2.0 License</name>
@@ -45,9 +45,9 @@
         </developer>
     </developers>
     <scm>
-        <connection>scm:git:git://github.com/tikv/client-java.git</connection>
-        <developerConnection>scm:git:ssh://github.com:tikv/client-java.git</developerConnection>
-        <url>https://github.com/tikv/client-java/tree/master</url>
+        <connection>scm:git:git://github.com/ab111404212/client-java.git</connection>
+        <developerConnection>scm:git:ssh://github.com:ab111404212/client-java.git</developerConnection>
+        <url>https://github.com/ab111404212/client-java/tree/master</url>
     </scm>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
