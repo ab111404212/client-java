@@ -44,9 +44,9 @@ public class TiConfiguration implements Serializable {
 
   static {
     // priority: system environment > config file > default
+    loadFromDefaultProperties();
     loadFromSystemProperties();
     loadFromConfigurationFile();
-    loadFromDefaultProperties();
     listAll();
   }
 
@@ -154,7 +154,7 @@ public class TiConfiguration implements Serializable {
   }
 
   public static void listAll() {
-    logger.info("static configurations are:" + new ArrayList<>(settings.entrySet()).toString());
+    logger.info("log static configurations are:" + new ArrayList<>(settings.entrySet()).toString());
   }
 
   private static void set(String key, String value) {

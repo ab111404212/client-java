@@ -120,7 +120,7 @@ public class ConfigUtils {
   public static final String TIFLASH_ENABLE = "tiflash.enable";
   public static final String TIKV_WARM_UP_ENABLE = "tikv.warm_up.enable";
   public static final String DEF_PD_ADDRESSES = "127.0.0.1:2379";
-  public static final String DEF_TIMEOUT = "200ms";
+  public static final String DEF_TIMEOUT = "20000ms";
   public static final String DEF_TIKV_GRPC_INGEST_TIMEOUT = "200s";
   public static final String DEF_FORWARD_TIMEOUT = "300ms";
   public static final String DEF_TIKV_GRPC_WARM_UP_TIMEOUT = "5000ms";
@@ -136,7 +136,7 @@ public class ConfigUtils {
   // by TiKV(maximum request size accepted by TiKV is around 1MB)
   public static final int MAX_REQUEST_KEY_RANGE_SIZE = 20000;
   public static final int DEF_INDEX_SCAN_CONCURRENCY = 5;
-  public static final int DEF_TABLE_SCAN_CONCURRENCY = 512;
+  public static final int DEF_TABLE_SCAN_CONCURRENCY = 10;
   public static final int DEF_BATCH_GET_CONCURRENCY = 20;
   public static final int DEF_BATCH_PUT_CONCURRENCY = 20;
   public static final int DEF_BATCH_DELETE_CONCURRENCY = 20;
@@ -146,9 +146,9 @@ public class ConfigUtils {
   public static final Kvrpcpb.IsolationLevel DEF_ISOLATION_LEVEL = Kvrpcpb.IsolationLevel.SI;
   public static final boolean DEF_SHOW_ROWID = false;
   public static final String DEF_DB_PREFIX = "";
-  public static final int DEF_KV_CLIENT_CONCURRENCY = 10;
+  public static final int DEF_KV_CLIENT_CONCURRENCY = 5;
   public static final TiConfiguration.KVMode DEF_KV_MODE = TiConfiguration.KVMode.TXN;
-  public static final String DEF_REPLICA_READ = "LEADER";
+  public static final String DEF_REPLICA_READ = "FOLLOWER";
   public static final boolean DEF_METRICS_ENABLE = false;
   public static final int DEF_METRICS_PORT = 3140;
   public static final String DEF_TIKV_NETWORK_MAPPING_NAME = "";
@@ -184,8 +184,8 @@ public class ConfigUtils {
   public static final String FOLLOWER = "FOLLOWER";
   public static final String LEADER_AND_FOLLOWER = "LEADER_AND_FOLLOWER";
 
-  public static final int DEF_TIKV_GRPC_KEEPALIVE_TIME = 10;
-  public static final int DEF_TIKV_GRPC_KEEPALIVE_TIMEOUT = 3;
+  public static final int DEF_TIKV_GRPC_KEEPALIVE_TIME = 7200;
+  public static final int DEF_TIKV_GRPC_KEEPALIVE_TIMEOUT = 20;
   public static final int DEF_TIKV_GRPC_IDLE_TIMEOUT = 60;
   public static final boolean DEF_TIKV_TLS_ENABLE = false;
   public static final boolean DEF_TIKV_USE_JKS = false;
