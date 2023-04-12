@@ -20,6 +20,8 @@ package org.tikv.common.codec;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.tikv.common.meta.TiColumnInfo;
 import org.tikv.common.meta.TiTableInfo;
 import org.tikv.common.row.ObjectRowImpl;
@@ -34,6 +36,8 @@ public class TableCodecV2 {
    * <p>- version, flag, numOfNotNullCols, numOfNullCols, notNullCols, nullCols, notNullOffsets,
    * notNullValues
    */
+//  private static final Logger LOG = LoggerFactory.getLogger(TableCodecV2.class);
+
   protected static byte[] encodeRow(
       List<TiColumnInfo> columnInfos, Object[] values, boolean isPkHandle) {
     RowEncoderV2 encoder = new RowEncoderV2();
@@ -66,6 +70,13 @@ public class TableCodecV2 {
         continue;
       }
       org.tikv.common.codec.RowV2.ColIDSearchResult searchResult = rowV2.findColID(col.getId());
+//      LOG.info(
+//          "======== decodeObjects column {} {} searchResult {} {} {}",
+//          col.getId(),
+//          col.getName(),
+//          searchResult.isNull,
+//          searchResult.notFound,
+//          searchResult.idx);
       if (searchResult.isNull) {
         // current col is null, nothing should be added to decodedMap
         continue;
@@ -76,6 +87,26 @@ public class TableCodecV2 {
         byte[] colData = rowV2.getData(searchResult.idx);
         Object d = RowDecoderV2.decodeCol(colData, col.getType());
         decodedDataMap.put(col.getId(), d);
+      } else {
+        String defaultValue = col.getOriginDefaultValue();
+        if (defaultValue != null && !defaultValue.isEmpty()) {
+          byte[] colData = defaultValue.getBytes();
+//          LOG.info(
+//              "======== current add default value column {} {} {} {} default {}",
+//              col.getId(),
+//              col.getName(),
+//              col.getType(),
+//              col.getComment(),
+//              colData);
+
+          if (RowDecoderV2.isInteger(col.getType())) {
+            Object d = RowDecoderV2.decodeIntegerDefaultCol(colData, col.getType());
+            decodedDataMap.put(col.getId(), d);
+            continue;
+          }
+          Object d = RowDecoderV2.decodeCol(colData, col.getType());
+          decodedDataMap.put(col.getId(), d);
+        }
       }
     }
 

@@ -128,7 +128,8 @@ public class ConfigUtils {
   public static final String DEF_SCAN_TIMEOUT = "20s";
   public static final int DEF_CHECK_HEALTH_TIMEOUT = 100;
   public static final int DEF_HEALTH_CHECK_PERIOD_DURATION = 300;
-  public static final int DEF_SCAN_BATCH_SIZE = 10240;
+  //  public static final int DEF_SCAN_BATCH_SIZE = 10240;
+  public static final int DEF_SCAN_BATCH_SIZE = 512;
   public static final int DEF_MAX_FRAME_SIZE = 268435456 * 2; // 256 * 2 MB
   public static final int DEF_INDEX_SCAN_BATCH_SIZE = 20000;
   public static final int DEF_REGION_SCAN_DOWNGRADE_THRESHOLD = 10000000;
@@ -137,7 +138,7 @@ public class ConfigUtils {
   public static final int MAX_REQUEST_KEY_RANGE_SIZE = 20000;
   public static final int DEF_INDEX_SCAN_CONCURRENCY = 5;
   public static final int DEF_TABLE_SCAN_CONCURRENCY = 10;
-  public static final int DEF_BATCH_GET_CONCURRENCY = 20;
+  public static final int DEF_BATCH_GET_CONCURRENCY = 5;
   public static final int DEF_BATCH_PUT_CONCURRENCY = 20;
   public static final int DEF_BATCH_DELETE_CONCURRENCY = 20;
   public static final int DEF_BATCH_SCAN_CONCURRENCY = 5;

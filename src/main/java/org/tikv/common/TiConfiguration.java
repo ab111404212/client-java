@@ -35,6 +35,7 @@ import org.tikv.kvproto.Kvrpcpb.IsolationLevel;
 
 public class TiConfiguration implements Serializable {
 
+  private static final long serialVersionUID = 8577408157582234793L;
   private static final Logger logger = LoggerFactory.getLogger(TiConfiguration.class);
   private static final ConcurrentHashMap<String, String> settings = new ConcurrentHashMap<>();
   public static final Metadata.Key<String> FORWARD_META_DATA_KEY =
@@ -44,9 +45,9 @@ public class TiConfiguration implements Serializable {
 
   static {
     // priority: system environment > config file > default
-    loadFromDefaultProperties();
     loadFromSystemProperties();
     loadFromConfigurationFile();
+    loadFromDefaultProperties();
     listAll();
   }
 
@@ -335,6 +336,8 @@ public class TiConfiguration implements Serializable {
   private boolean enableGrpcForward = getBoolean(TIKV_ENABLE_GRPC_FORWARD);
 
   private int kvClientConcurrency = getInt(TIKV_KV_CLIENT_CONCURRENCY);
+
+  private int scanBatchSize = getInt(TIKV_GRPC_SCAN_BATCH_SIZE);
   private ReplicaRead replicaRead = getReplicaRead(TIKV_REPLICA_READ);
   private ReplicaSelector internalReplicaSelector = getReplicaSelector(replicaRead);
   private ReplicaSelector replicaSelector;
@@ -526,6 +529,9 @@ public class TiConfiguration implements Serializable {
   }
 
   public int getScanBatchSize() {
+    if (scanBatchSize > 0) {
+      return scanBatchSize;
+    }
     return DEF_SCAN_BATCH_SIZE;
   }
 
@@ -669,6 +675,11 @@ public class TiConfiguration implements Serializable {
 
   public TiConfiguration setKvClientConcurrency(int kvClientConcurrency) {
     this.kvClientConcurrency = kvClientConcurrency;
+    return this;
+  }
+
+  public TiConfiguration setScanBatchSize(int scanBatchSize) {
+    this.scanBatchSize = scanBatchSize;
     return this;
   }
 
