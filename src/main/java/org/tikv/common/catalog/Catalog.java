@@ -105,6 +105,10 @@ public class Catalog implements AutoCloseable {
     }
   }
 
+  public Map<String, List<TiTableInfo>> getTiDBInfoCache() {
+    return metaCache.getTiDBInfoCache();
+  }
+
   @VisibleForTesting
   public TiTableInfo getTable(TiDBInfo database, long tableId) {
     Objects.requireNonNull(database, "database is null");
@@ -176,6 +180,19 @@ public class Catalog implements AutoCloseable {
       // TODO: support reading from view table in the future.
       if (tbl != null && (tbl.isView() || tbl.isSequence())) return null;
       return tbl;
+    }
+
+    public Map<String, List<TiTableInfo>> getTiDBInfoCache() {
+      Map<String, List<TiTableInfo>> newDBCache = new HashMap<>();
+      for (Map.Entry<TiDBInfo, Map<String, TiTableInfo>> entry : tableCache.entrySet()) {
+        //        List<TiTableInfo> tableInfos = newDBCache.get(entry.getKey().getName());
+        List<TiTableInfo> tableInfos = new ArrayList<>();
+        for (Map.Entry<String, TiTableInfo> tableEntry : entry.getValue().entrySet()) {
+          tableInfos.add(tableEntry.getValue());
+        }
+        newDBCache.put(entry.getKey().getName(), tableInfos);
+      }
+      return newDBCache;
     }
 
     private Map<String, TiTableInfo> loadTables(TiDBInfo db) {
